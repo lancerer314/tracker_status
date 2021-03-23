@@ -3,4 +3,5 @@ A tracker status [greasemonkey](https://www.greasespot.net/) extension for [RED]
 
 ## Installation
 Assumming GreaseMonkey extension is installed and active on the browser you are using, go to the [script page](https://github.com/lancerer314/tracker_status/blob/main/IsItDown.user.js) and click on the "raw" button
-![Screenshot](media/raw.png)
+
+<img src="media/raw.png" alt="raw button" width="50%"/>
