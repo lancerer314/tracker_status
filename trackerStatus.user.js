@@ -20,10 +20,7 @@ const DomNodeId = "stats_services"
 let response = null;
 var messageDiv =  document.createElement("DIV");
 messageDiv.setAttribute("id", "services_detail_container");
-let rect = document.getElementById('stats_seeding').getBoundingClientRect();
 messageDiv.style.cssText=`display:none;position:absolute;width:200px;overflow: auto;z-index:200;background-color:black`;
-messageDiv.style.top=rect.bottom+"px";
-messageDiv.style.left=rect.left+"px";
 document.body.prepend(messageDiv);
 
   
@@ -39,6 +36,7 @@ if(stats_container){
 stats_container =  document.createElement("li");
 stats_container.setAttribute("id", "stats_services");
 stats_container.setAttribute("class", "tooltip");
+stats_container.style.cursor="pointer";
 stats_container.innerHTML='Services:<span class="stat">-</span>'
 stats_ul.prepend(stats_container);
 stats_container.addEventListener('mouseover', eventHandler, false);
@@ -50,6 +48,9 @@ function eventHandler(event) {
   if(event.target.id!=DomNodeId){return;}
   switch(event.type) {
     case "mouseover":
+      let rect = document.getElementById(DomNodeId).getBoundingClientRect();
+      messageDiv.style.top=rect.bottom+"px";
+      messageDiv.style.left=rect.left+"px";
       messageDiv.style.display="block";
       break;
     case "mouseout":
@@ -62,6 +63,58 @@ function eventHandler(event) {
   } 
 }
 
+/* uncomment for tests
+let mockResponse=`{
+    "Website": {
+        "Status": "1",
+        "Latency": "16ms",
+        "CurrentUptime": "19955",
+        "UptimeRecord": "121077",
+        "CurrentDowntime": "0"
+    },
+    "TrackerHTTP": {
+        "Status": "1",
+        "Latency": "30ms",
+        "CurrentUptime": "29197",
+        "UptimeRecord": "83546",
+        "CurrentDowntime": "0"
+    },
+    "TrackerHTTPS": {
+        "Status": "0",
+        "Latency": "16ms",
+        "CurrentUptime": "136",
+        "UptimeRecord": "73539",
+        "CurrentDowntime": "0"
+    },
+    "IRC": {
+        "Status": "1",
+        "Latency": "23ms",
+        "CurrentUptime": "29208",
+        "UptimeRecord": "369746",
+        "CurrentDowntime": "0"
+    },
+    "IRCTorrentAnnouncer": {
+        "Status": "1",
+        "Latency": "online",
+        "CurrentUptime": "419",
+        "UptimeRecord": "59089",
+        "CurrentDowntime": "0"
+    },
+    "IRCUserIdentifier": {
+        "Status": "1",
+        "Latency": "online",
+        "CurrentUptime": "427",
+        "UptimeRecord": "306740",
+        "CurrentDowntime": "0"
+    },
+    "tweet": {
+        "date": "27th of March 2019",
+        "unix": "1553728335",
+        "message": "As of 6 hours ago main site and tracker services have been restored."
+    }
+}`;*/
+
+
 GM.xmlHttpRequest({
   method: "POST",
   url: 'https://red.trackerstatus.info/api/all/',
@@ -71,6 +124,9 @@ GM.xmlHttpRequest({
   onload: function(res) { 
     let overallOk=true;
     let htmlMessage = "<ul>";
+    /* switch to this for tests
+    let response = JSON.parse(mockResponse);
+    */
     let response = JSON.parse(res.responseText);
     Object.entries(response).forEach(service => {
       console.log(service[0]+":"+service[1].Status);
