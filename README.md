@@ -6,9 +6,20 @@ Assumming GreaseMonkey extension is installed and active on the browser you are 
 
 <img src="media/raw.png" alt="raw button" width="50%"/>
 
+## What it does
+When displaying the homepage of RED you will see the overall status of the trackers and IRC
+
+<img src="media/status.png" alt="overall status"/>
+
+By clicking it you will open a tab on the site [red.trackerstatus.info](https://red.trackerstatus.info/)
+
+In case one service is down, you can se the detail of each service by moving your mouse over it
+
+<img src="media/detail.png" alt="detailed status"/>
+
 ## How does it work
 
-The scripts send a POST request to the [red.trackerstatus.info](https://red.trackerstatus.info/api/) API to retrieve status of the tracker, website,... 
+The scripts send a POST request to the [red.trackerstatus.info API](https://red.trackerstatus.info/api/) to retrieve status of the tracker, website,... 
 Here is an example of response :
 ```
 {
