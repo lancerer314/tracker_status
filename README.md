@@ -17,7 +17,7 @@ In case one service is down, you can se the detail of each service by moving you
 
 <img src="media/detail.png" alt="detailed status"/>
 
-## How does it work
+## How it works
 
 The scripts send a POST request to the [red.trackerstatus.info API](https://red.trackerstatus.info/api/) to retrieve status of the tracker, website,... 
 Here is an example of response :
