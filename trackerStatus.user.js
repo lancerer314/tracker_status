@@ -11,38 +11,8 @@
 // ==/UserScript==
 // inspired from https://greasyfork.org/en/scripts/395736-is-it-down
 
-let structure_msg = "Redacted site structure not recognized by tracker_status user script, please update it or notify dev.";
-let stats_ul = document.getElementById('userinfo_stats');
-if(!stats_ul){
-  alert(structure_msg);
-}
-const DomNodeId = "stats_services"
-let response = null;
-var messageDiv =  document.createElement("DIV");
-messageDiv.setAttribute("id", "services_detail_container");
-messageDiv.style.cssText=`display:none;position:absolute;width:200px;overflow: auto;z-index:200;background-color:black`;
-document.body.prepend(messageDiv);
 
-  
-//sometimes the DOM node has already been set
-let stats_container = document.getElementById("stats_services");
-if(stats_container){
-  if(stats_ul.contains(stats_container)){
-    stats_ul.removeChild(stats_container);
-  } else {
-    alert(structure_msg);
-  }
-}
-stats_container =  document.createElement("li");
-stats_container.setAttribute("id", "stats_services");
-stats_container.setAttribute("class", "tooltip");
-stats_container.style.cursor="pointer";
-stats_container.innerHTML='Services:<span class="stat">-</span>'
-stats_ul.prepend(stats_container);
-stats_container.addEventListener('mouseover', eventHandler, false);
-stats_container.addEventListener('mouseout', eventHandler, false);
-stats_container.addEventListener('click', eventHandler, false);
-  
+
 
 function eventHandler(event) {
   if(event.target.id!=DomNodeId){return;}
@@ -63,7 +33,8 @@ function eventHandler(event) {
   } 
 }
 
-/* uncomment for tests
+//uncomment for tests
+/* 
 let mockResponse=`{
     "Website": {
         "Status": "1",
@@ -115,21 +86,11 @@ let mockResponse=`{
 }`;*/
 
 
-GM.xmlHttpRequest({
-  method: "POST",
-  url: 'https://red.trackerstatus.info/api/all/',
-  headers: {
-    "Content-Type": "application/x-www-form-urlencoded"
-  },
-  onload: function(res) { 
-    let overallOk=true;
-    let htmlMessage = "<ul>";
-    /* switch to this for tests
-    let response = JSON.parse(mockResponse);
-    */
-    let response = JSON.parse(res.responseText);
-    Object.entries(response).forEach(service => {
-      console.log(service[0]+":"+service[1].Status);
+function parseResponse(responseText){
+  let overallOk=true;
+  let htmlMessage = "<ul>";
+  let response = JSON.parse(responseText);
+  Object.entries(response).forEach(service => {
       if(service[1].Status === "0"){
         overallOk=false;
         htmlMessage+=`<li style=\"color:red\">${service[0]}: Down</li>`;
@@ -146,5 +107,73 @@ GM.xmlHttpRequest({
     stats_container.style.color=overallOk?'green':'red';
     stats_container.innerHTML=`Services:<span class="stat">${overallOk?'Ok':'Ko'}</span>`
     messageDiv.innerHTML=htmlMessage+"</ul>";
+}
+
+
+function callApi(){
+  //console.log("call Api");
+  GM.xmlHttpRequest({
+    method: "POST",
+    url: 'https://red.trackerstatus.info/api/all/',
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    onload: function(res) { 
+  		//console.log("received api response");
+      GM.setValue("responseText", res.responseText);
+      GM.setValue("callTimestamp",Date.now());
+      parseResponse(res.responseText)
+    }
+	});
+}
+
+const API_QUERY_PERIOD_MS =  300000; //query API at most every 5 minutes
+const UPDATE_PERIOD_MS = 600000;// update the data every 10 mins if the user stay on the home page
+
+function checkDataUpdate(){
+  //console.log("check data ");
+  GM.getValue("callTimestamp").then((callTimestamp) => {
+    if((typeof callTimestamp === 'undefined')|| Number(callTimestamp)< Date.now()- API_QUERY_PERIOD_MS){
+      callApi();
+    } else {
+      GM.getValue("responseText").then((value) => {parseResponse(value);});
+    }
+    setTimeout(checkDataUpdate, UPDATE_PERIOD_MS);
+  });
+}
+
+const structure_msg = "Redacted site structure not recognized by tracker_status user script, please update it or notify dev.";
+const stats_ul = document.getElementById('userinfo_stats');
+if(!stats_ul){
+  console.log(structure_msg);
+}
+const DomNodeId = "stats_services"
+let response = null;
+var messageDiv =  document.createElement("DIV");
+messageDiv.setAttribute("id", "services_detail_container");
+messageDiv.style.cssText=`display:none;position:absolute;width:200px;overflow: auto;z-index:200;background-color:black`;
+document.body.prepend(messageDiv);
+
+  
+//sometimes the DOM node has already been set
+let stats_container = document.getElementById("stats_services");
+if(stats_container){
+  if(stats_ul.contains(stats_container)){
+    stats_ul.removeChild(stats_container);
+  } else {
+    console.log(structure_msg);
   }
-});
+} else {
+  stats_container =  document.createElement("li");
+}
+stats_container.setAttribute("id", "stats_services");
+stats_container.setAttribute("class", "tooltip");
+stats_container.style.cursor="pointer";
+stats_container.innerHTML='Services:<span class="stat">-</span>'
+stats_ul.prepend(stats_container);
+stats_container.addEventListener('mouseover', eventHandler, false);
+stats_container.addEventListener('mouseout', eventHandler, false);
+stats_container.addEventListener('click', eventHandler, false);
+  
+checkDataUpdate();
+
