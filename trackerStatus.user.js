@@ -1,10 +1,9 @@
 // ==UserScript==
 // @name         Tracker status
-// @version      0.1.0
+// @version      0.1.1
 // @namespace    https://github.com/lancerer314/tracker_status
 // @description  display tracker status  from TrackerStatus API.
-// @include      https://redacted.ch/
-// @include      https://redacted.ch/index.php
+// @match        https://redacted.ch/*
 // @grant        GM.xmlHttpRequest
 // @grant    		 GM.getValue
 // @grant    		 GM.setValue
@@ -105,7 +104,7 @@ function parseResponse(responseText){
       }
     })
     stats_container.style.color=overallOk?'green':'red';
-    stats_container.innerHTML=`Services:<span class="stat">${overallOk?'Ok':'Ko'}</span>`
+    stats_container.innerHTML=`Services: <span class="stat">${overallOk?'Ok':'Ko'}</span>`
     messageDiv.innerHTML=htmlMessage+"</ul>";
 }
 
@@ -127,8 +126,8 @@ function callApi(){
 	});
 }
 
-const API_QUERY_PERIOD_MS =  300000; //query API at most every 5 minutes
-const UPDATE_PERIOD_MS = 600000;// update the data every 10 mins if the user stay on the home page
+const API_QUERY_PERIOD_MS =  60000; //query API at most every minute
+const UPDATE_PERIOD_MS = 1200000;// update the data every 30 min if the user stay on the home page
 
 function checkDataUpdate(){
   //console.log("check data ");
@@ -176,4 +175,3 @@ stats_container.addEventListener('mouseout', eventHandler, false);
 stats_container.addEventListener('click', eventHandler, false);
   
 checkDataUpdate();
-
