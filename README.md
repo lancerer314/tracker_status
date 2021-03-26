@@ -1,8 +1,11 @@
 # tracker_status
-A tracker status [greasemonkey](https://www.greasespot.net/) user script for [RED](https://redacted.ch) inspired from https://greasyfork.org/en/scripts/395736-is-it-down (version 0.4.3)
+A tracker status [tampermonkey](https://www.tampermonkey.net/)/[greasemonkey](https://www.greasespot.net/) user script for [RED](https://redacted.ch) inspired from https://greasyfork.org/en/scripts/395736-is-it-down (version 0.4.3)
 
 ## Installation
-Assumming GreaseMonkey extension is installed and active on the browser you are using, go to the [script page](https://github.com/lancerer314/tracker_status/blob/main/trackerStatus.user.js) and click on the "raw" button
+
+The easiest way is to install from https://greasyfork.org/en/scripts/423981-tracker-status
+
+You can also go to the [script page](https://github.com/lancerer314/tracker_status/blob/main/trackerStatus.user.js) and click on the "raw" button
 
 <img src="media/raw.png" alt="raw button" width="50%"/>
 
