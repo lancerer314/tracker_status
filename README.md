@@ -10,7 +10,7 @@ You can also go to the [script page](https://github.com/lancerer314/tracker_stat
 <img src="media/raw.png" alt="raw button" width="50%"/>
 
 ## What it does
-When displaying the homepage of RED you will see the overall status of the trackers and IRC
+When displaying a page of RED you will see the overall status of the trackers and IRC
 
 <img src="media/status.png" alt="overall status"/>
 
